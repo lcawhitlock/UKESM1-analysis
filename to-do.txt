@@ -1,0 +1,4 @@
+Things to do:
+- sort file paths
+- sort data
+- embed gif
