@@ -1,4 +1,3 @@
-Things to do:
-- sort file paths
-- sort data
-- embed gif
+Things to do 15/07:
+- consolidate scripts
+- readme
