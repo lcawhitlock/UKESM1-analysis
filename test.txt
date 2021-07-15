@@ -1,2 +1,0 @@
-Once again we are attempting version control. Hoping this time it will actually stick.
-Realistically, this seems unlikely.
