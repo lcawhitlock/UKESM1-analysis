@@ -1,29 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul 20 12:25:07 2021
+Created on Tue Aug 10 12:38:02 2021
 
 @author: lcawh
 """
-import xarray as xr
 import numpy as np
+import xarray as xr
 
-def load_data(info):
-    '''function to load and combine historical and scenario data for
-    individual variables.
-    Arguments:
-    =========
-    info = array of str, ccontaining variable[0], letter[1], scenario[2]'''
-    
-    #define paths
-    path1 = f'../02-data/ukesm1-output/{info[0]}_{info[1]}mon_UKESM1-0-LL_historical_r1i1p1f2_gn_*.nc'
-    path2 = f'../02-data/ukesm1-output/{info[0]}_{info[1]}mon_UKESM1-0-LL_{info[2]}_r1i1p1f2_gn_*.nc'
-    
-    #combine data
-    data1 = xr.open_mfdataset(paths=path1,combine='by_coords')
-    data2 = xr.open_mfdataset(paths=path2,combine='by_coords')
-    data3 = xr.concat([data1,data2],dim='time')
-    
-    return data3
+from loaddata import load_data,load_mass
 
 def tas_anomaly(info,months,startyear=1850,endyear=2100,latmin=-90,
              latmax=90):
@@ -71,6 +55,25 @@ def tas_anomaly(info,months,startyear=1850,endyear=2100,latmin=-90,
 
     
     return anom
-    
-    
 
+def c_anomaly(info,startyear,endyear,latmin,latmax):
+    
+    data = load_mass(info)
+    
+    #get baseline
+    d = data.sel(time=slice('1850-01-01','1900-12-16'))
+    d1 = d['mass']
+    d2 = d1.mean(dim='time')
+    d3 = d2.sel(lat=slice(latmin,latmax))
+    bl = d3.sum(dim=('lat','lon'))
+    
+    #get total
+    m = data.sel(time=slice(f'{startyear}-01-01',f'{endyear}-12-16'))
+    m1 = m.groupby('time.year').mean('time')
+    m2 = m1['mass']
+    m3 = m2.sel(lat=slice(latmin,latmax))
+    ttl = m3.sum(dim=('lat','lon'))
+    
+    anom = ttl-bl
+    
+    return anom

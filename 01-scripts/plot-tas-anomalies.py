@@ -4,9 +4,12 @@ Created on Tue Jul 20 12:34:05 2021
 
 @author: lcawh
 """
-import matplotlib.pylot as plt 
-from load-data import load_data, tas_anomaly
+import matplotlib.pyplot as plt
+import xarray as xr
+import numpy as np
 
+from loaddata import load_data
+from getanomalies import tas_anomaly
 
 #set up figure
 fig,axes = plt.subplots(nrows=2,ncols=2,figsize=(16,16))
@@ -33,3 +36,5 @@ for ax,m,t in zip(axes.flat,season,titles):
     for s,c,la in zip(scen,colours,labels):      
         ax.plot(x,tas_anomaly(['tas','A',s],m,startyear=2014,latmin=60),color=c,label=la)
     ax.legend(loc='upper left',frameon=False)
+
+#plt.savefig("../03-output-graphics/final-plots/temp-anom.jpg")
